@@ -1,0 +1,16 @@
+{
+  "level_id": "tutorial_1",
+  "lemma": {
+    "name": "example1",
+    "decl" : "(x y z : ℕ) : x * y + z = x * y + z"
+  },
+  "toolbox":  {
+    "kind": "flyoutToolbox",
+    "contents": [
+      {
+        "kind": "block",
+        "type": "tactic_refl"
+      }
+    ]
+  }
+}

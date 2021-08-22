@@ -1,0 +1,29 @@
+{
+  "level_id": "tutorial_2",
+  "preamble": "import tactic.modded tactic.apply\nmeta def rw\n:= tactic.interactive.rw'",
+  "lemma": {
+    "name": "example2",
+    "decl" : "(x y : ℕ) (h : y = x + 7) : 2 * y = 2 * (x + 7)"
+  },
+  "toolbox":  {
+    "kind": "flyoutToolbox",
+    "contents": [
+      {
+        "kind": "block",
+        "type": "tactic_refl"
+      },
+      {
+        "kind": "block",
+        "type": "tactic_rw"
+      },
+      {
+        "kind": "sep",
+        "gap": "32"
+      }, 
+      {
+        "kind": "block",
+        "blockxml": "<block type='prop' editable='false'><field name='PROP_NAME'>h</field></block>"
+      }
+    ]
+  }
+}
