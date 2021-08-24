@@ -2,7 +2,7 @@
   <div class="container">
       <pre id="goalArea">{{currentGoal.goal}}</pre>
       <LeanWorkspace 
-        class="workspace" 
+        id="workspace" 
         v-bind:toolbox="levelData ? levelData.toolbox : null" 
         v-bind:lemma-name="levelData ? levelData.lemma.name : ''" 
         v-bind:lemma-decl="levelData ? levelData.lemma.decl : ''" 
@@ -55,9 +55,6 @@ export default Vue.extend({
       //workspace.clear();
 
       this.updateCode('');
-    },
-    currentGoal: function() {
-      console.log("CG", this.currentGoal);
     }
   },
   computed: {
@@ -65,11 +62,23 @@ export default Vue.extend({
       if (this.levelData) {
         let c = '';
         if (this.levelData.preamble) {
-          c += this.levelData.preamble + '\n';
+          c += this.levelData.preamble.join('\n');
+          c += '\n';
+        }
+
+        c += 'set_option pp.structure_projections false\n';
+
+        if (this.levelData.in_namespace) {
+          c += `namespace ${this.levelData.in_namespace}\n`
         }
 
         c += `${this.code}`;
         const index = c.length - "\nend".length - 1;
+
+        if (this.levelData.in_namespace) {
+          c += `\nend ${this.levelData.in_namespace}`
+        }
+
         const printstatement = `\n#print "EOF${this.workspace_seq}"\n`;
         const [row, column] = calculateRowColumn(c, index);
         return {
@@ -101,6 +110,8 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=STIX+Two+Math&display=swap');
+
 .container {
   display: grid; 
   grid-auto-flow: row dense; 
@@ -117,5 +128,11 @@ export default Vue.extend({
   justify-self: stretch; 
   grid-area: 1; 
 }
-#goalArea { grid-area: goal-area; }
+#goalArea { 
+  grid-area: goal-area; 
+  font-family: 'STIX Two Math', serif;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+}
 </style>

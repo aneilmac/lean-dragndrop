@@ -6,7 +6,7 @@ export default function makeServer() : lean.Server {
       javascript: prefix + '/lean/lean_js_js.js',
       webassemblyJs:  prefix + '/lean/lean_js_wasm.js',
       webassemblyWasm:  prefix + '/lean/lean_js_wasm.wasm',
-      libraryZip:  prefix + '/lean/library.zip',
+      libraryZip:  prefix + '/lean/library_ab.zip',
     };
   const transport = new lean.WebWorkerTransport(opts);
   const server = new lean.Server(transport);

@@ -1,8 +1,13 @@
 {
   "level_id": "tutorial_1",
+  "preamble": [
+    "import mynat.definition",
+    "import mynat.add",
+    "import mynat.mul"
+  ],
   "lemma": {
     "name": "example1",
-    "decl" : "(x y z : ℕ) : x * y + z = x * y + z"
+    "decl" : "(x y z : mynat) : x * y + z = x * y + z"
   },
   "toolbox":  {
     "kind": "flyoutToolbox",
@@ -10,6 +15,10 @@
       {
         "kind": "block",
         "type": "tactic_refl"
+      },
+      {
+        "kind": "block",
+        "type": "tactic_sorry"
       }
     ]
   }

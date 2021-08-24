@@ -1,0 +1,36 @@
+{
+  "level_id": "tutorial_4",
+  "preamble": [
+    "import mynat.add"
+  ],
+  "in_namespace": "mynat",
+  "lemma": {
+    "name": "add_succ_zero ",
+    "decl" : "(a : mynat) : a + succ(0)  = succ(a)"
+  },
+  "toolbox":  {
+    "kind": "flyoutToolbox",
+    "contents": [
+      {
+        "kind": "block",
+        "type": "tactic_refl"
+      },
+      {
+        "kind": "block",
+        "type": "tactic_rw"
+      },
+      {
+        "kind": "block",
+        "blockxml": "<block type='prop' editable='false'><data>add_zero</data><field name='PROP_NAME'>a + 0 = a</field></block>"
+      },
+      {
+        "kind": "block",
+        "blockxml": "<block type='prop' editable='false'><data>add_succ</data><field name='PROP_NAME'>a + succ b = succ (a + b)</field></block>"
+      },
+      {
+        "kind": "block",
+        "type": "tactic_sorry"
+      }
+    ]
+  }
+}

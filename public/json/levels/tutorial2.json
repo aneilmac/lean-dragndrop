@@ -1,9 +1,13 @@
 {
   "level_id": "tutorial_2",
-  "preamble": "import tactic.modded tactic.apply\nmeta def rw\n:= tactic.interactive.rw'",
+  "preamble": [
+    "import mynat.definition",
+    "import mynat.add",
+    "import mynat.mul"
+  ],
   "lemma": {
     "name": "example2",
-    "decl" : "(x y : ℕ) (h : y = x + 7) : 2 * y = 2 * (x + 7)"
+    "decl" : "(x y : mynat) (h : y = x + 7) : 2 * y = 2 * (x + 7)"
   },
   "toolbox":  {
     "kind": "flyoutToolbox",
@@ -17,12 +21,12 @@
         "type": "tactic_rw"
       },
       {
-        "kind": "sep",
-        "gap": "32"
-      }, 
-      {
         "kind": "block",
         "blockxml": "<block type='prop' editable='false'><field name='PROP_NAME'>h</field></block>"
+      },
+      {
+        "kind": "block",
+        "type": "tactic_sorry"
       }
     ]
   }

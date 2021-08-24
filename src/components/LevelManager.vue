@@ -63,6 +63,7 @@ export default Vue.extend({
       }
     },
     syncCodeFile(c: CodeChangedResult) {
+      console.log(c.codeFile);
       if (this.levelData) {
         this.goalWatcher.startListen(c.workspace_seq);
         this.server.sync(this.fileName, c.codeFile);

@@ -2,7 +2,8 @@ import * as Blockly from 'blockly';
 
 export interface _LevelData {
     level_id: string,
-    preamble: string | undefined
+    preamble: [string] | undefined,
+    in_namespace: string | undefined
     lemma: {
       name: string,
       decl: string

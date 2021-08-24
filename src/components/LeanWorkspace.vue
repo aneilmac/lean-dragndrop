@@ -43,6 +43,7 @@ export default Vue.extend({
           <block type="lemma" deletable="false" movable="true" editable="false">
             <field name="THEOREM_NAME">${this.lemmaName}</field>
             <field name="THEOREM_DECLARATION">${this.lemmaDecl}</field>
+            <data>nat_num_game</data>
           </block>
         </xml>`;
       }
