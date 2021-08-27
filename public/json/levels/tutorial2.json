@@ -10,24 +10,11 @@
     "decl" : "(x y : mynat) (h : y = x + 7) : 2 * y = 2 * (x + 7)"
   },
   "toolbox":  {
-    "kind": "flyoutToolbox",
-    "contents": [
-      {
-        "kind": "block",
-        "type": "tactic_refl"
-      },
-      {
-        "kind": "block",
-        "type": "tactic_rw"
-      },
-      {
-        "kind": "block",
-        "blockxml": "<block type='prop' editable='false'><field name='PROP_NAME'>h</field></block>"
-      },
-      {
-        "kind": "block",
-        "type": "tactic_sorry"
-      }
-    ]
+    "tactics": [
+      "<block type='tactic_refl' />",
+      "<block type='tactic_rw' />",
+      "<block type='tactic_sorry' />"
+    ],
+    "propositions": [ ]
   }
 }

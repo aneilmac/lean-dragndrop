@@ -8,13 +8,16 @@ import * as Blockly from 'blockly';
 import {Generator, defineBlocks} from '@aneilmac/blockly-plugin-lean';
 import { PropType } from 'vue/types/options';
 import {WorkspaceError} from '@/goalWatcher';
+// @ts-ignore
+//import {ContinuousToolbox, ContinuousFlyout, ContinuousMetrics} from '@blockly/continuous-toolbox';
+import {LevelToolbox} from '@/levelData';
 
 defineBlocks(Blockly);
 
 export default Vue.extend({
   name: 'LeakWorkspace',
   props: {
-    toolbox: Object as PropType<Blockly.utils.toolbox.ToolboxDefinition>,
+    toolbox: Object as PropType<LevelToolbox>,
     lemmaName: String,
     lemmaDecl: String,
     activeErrors: Array as PropType<WorkspaceError[]>
@@ -23,14 +26,16 @@ export default Vue.extend({
     return {
       options: {
         media: 'media/',
-        toolbox: { kind: "", contents: [] },
+        toolbox: {
+          kind: "",
+          contents: []
+        },
         grid: {
             spacing: 25,
             length: 3,
             colour: '#ccc',
             snap: true
-          },
-
+        },
       } as Blockly.BlocklyOptions,
       workspace: null as Blockly.WorkspaceSvg | null,
     }
@@ -51,14 +56,10 @@ export default Vue.extend({
     }
   },
   mounted() {
-    if (this.toolbox) {
-      this.options.toolbox = this.toolbox;
-    }
-
     let div = this.$refs["blocklyDiv"];
     if (div instanceof Element) {
       this.workspace = Blockly.inject(div, this.options);
-      
+
       // Disable anything not added to the lemma specifically.
       this.workspace.addChangeListener(Blockly.Events.disableOrphans);
 
@@ -96,14 +97,9 @@ export default Vue.extend({
     });
   },
   watch: {
-    toolbox: function(newVal : Blockly.utils.toolbox.ToolboxDefinition) {
-      if (this.workspace) {
-        if (newVal) {
-            this.workspace.updateToolbox(newVal);
-        } else {
-          this.workspace.updateToolbox({ kind: "", contents: []});
-        }
-      }
+    toolbox: function(newTools: LevelToolbox) {
+      let blocks = `<xml>${newTools.tactics.join('') + newTools.propositions.join('')}</xml>`;
+      this.workspace?.updateToolbox(blocks);
     },
     lemmaName:  function() { this.updateWorkspace(); },
     lemmaDecl: function() { this.updateWorkspace(); },

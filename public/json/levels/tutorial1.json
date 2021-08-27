@@ -10,16 +10,10 @@
     "decl" : "(x y z : mynat) : x * y + z = x * y + z"
   },
   "toolbox":  {
-    "kind": "flyoutToolbox",
-    "contents": [
-      {
-        "kind": "block",
-        "type": "tactic_refl"
-      },
-      {
-        "kind": "block",
-        "type": "tactic_sorry"
-      }
-    ]
+    "tactics": [
+      "<block type='tactic_refl' />",
+      "<block type='tactic_sorry' />"
+    ],
+    "propositions": [ ]
   }
 }

@@ -9,24 +9,11 @@
     "decl" : "(a b : mynat) (h : succ a = b) : succ(succ(a)) = succ(b)"
   },
   "toolbox":  {
-    "kind": "flyoutToolbox",
-    "contents": [
-      {
-        "kind": "block",
-        "type": "tactic_refl"
-      },
-      {
-        "kind": "block",
-        "type": "tactic_rw"
-      },
-      {
-        "kind": "block",
-        "blockxml": "<block type='prop' editable='false'><field name='PROP_NAME'>h</field></block>"
-      },
-      {
-        "kind": "block",
-        "type": "tactic_sorry"
-      }
-    ]
+    "tactics": [
+      "<block type='tactic_refl' />",
+      "<block type='tactic_rw' />",
+      "<block type='tactic_sorry' />"
+    ],
+    "propositions": [ ]
   }
 }

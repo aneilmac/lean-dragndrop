@@ -1,20 +1,21 @@
 {
-  "level_id": "tutorial_4",
+  "level_id": "addition_1",
   "preamble": [
     "import mynat.add"
   ],
   "in_namespace": "mynat",
   "lemma": {
-    "name": "add_succ_zero ",
-    "decl" : "(a : mynat) : a + succ(0)  = succ(a)"
+    "name": "zero_add ",
+    "decl" : "(n : mynat) : 0 + n  = n"
   },
   "toolbox":  {
     "tactics": [
       "<block type='tactic_refl' />",
       "<block type='tactic_rw' />",
+      "<block type='tactic_induction' />",
       "<block type='tactic_sorry' />"
     ],
-    "propositions": [ 
+    "propositions": [
       "<block type='prop' editable='false'><data>add_zero</data><field name='PROP_NAME'>a + 0 = a</field></block>",
       "<block type='prop' editable='false'><data>add_succ</data><field name='PROP_NAME'>a + succ b = succ (a + b)</field></block>"
     ]

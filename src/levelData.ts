@@ -1,5 +1,10 @@
 import * as Blockly from 'blockly';
 
+export interface LevelToolbox {
+  tactics: string[],
+  propositions: string[]
+}
+
 export interface _LevelData {
     level_id: string,
     preamble: [string] | undefined,
@@ -8,7 +13,7 @@ export interface _LevelData {
       name: string,
       decl: string
     },      
-    toolbox: Blockly.utils.toolbox.ToolboxDefinition
+    toolbox: LevelToolbox
 }
 
 export type LevelData = _LevelData | null;

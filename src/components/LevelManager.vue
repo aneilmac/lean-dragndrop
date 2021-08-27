@@ -9,7 +9,7 @@
 import Vue from 'vue';
 import Level from '@/components/Level.vue';
 import makeServer from '@/makeServer';
-import { AllMessagesResponse, InfoResponse } from 'lean-client-js-core';
+import { GetWidgetRequest, AllMessagesResponse, InfoResponse } from 'lean-client-js-core';
 import {CodeChangedResult} from '@/codeUtils'
 import {GoalChanged, GoalWatcher} from '@/goalWatcher'
 import {readLevel, LevelData} from '@/levelData';
@@ -17,31 +17,53 @@ import {Route} from 'vue-router';
 
 const singleton_server = makeServer();
 
+/**
+ * A level is synonymous with a single lean file the user is currently 
+ * interacting with. We manages a single "level" by initializing the lean server 
+ * and processing all communications which arrive to and from the server with 
+ * respect to the current level/lean file.
+ */
 export default Vue.extend({
   name: 'LevelManager',
   components: {
     Level
   },
   computed: {
-    fileName: function() {
-      return `${(this as any).levelData.level_id}.lean`;
+    /**
+     * The filename of the lean file we are currently interested in. This is 
+     * `<currentLevelName>.lean` or an empty string if levelData is null.
+     */
+    fileName: function() : string {
+      return this.levelData ? `${this.levelData.level_id}.lean` : '';
     }
   },
   data() {
     return {
-      levelData: null as LevelData,
+      // The lean server itself which we are communicating with.
+      server: singleton_server,
+      // Our listener service for processing lean server communication.
       goalWatcher: new GoalWatcher(),
+      // Metadata of the level
+      levelData: null as LevelData,
+      // The current state of the level. Including the current goal to be 
+      // solved, the nature of whether the user has completed the level, and 
+      // all errors/warnings.
       currentGoal: {
         errors: [],
-        goal: "",
-        completed: false
-      } as GoalChanged,
-      server: singleton_server
+        goals: [],
+        completed: false,
+        hypotheses: [],
+      } as GoalChanged
     }
   },
   mounted() {
     this.goalWatcher.callback = this.updateGoal;
+    // TODO make errors more visible on level.
     this.server.error.on((err: any) => console.error('error:', err));
+    // The `server.allMessages` is an event we listen to for the lifetime of the 
+    // application, which will effectively spit out all errors/warnings/infos 
+    // to do with lean file contents. We parse these messages to test level 
+    // state.
     this.server.allMessages.on((allMessages: AllMessagesResponse) => {
       if (this.levelData) {
         this.goalWatcher.testAllMessages(allMessages);
@@ -49,29 +71,68 @@ export default Vue.extend({
     });
   },
   beforeRouteEnter(to: Route, _from: Route, next) {
+    // TODO: Make a property instead. Let's not handle this here.
     const levelName = to.params.id;
     readLevel(levelName, (levelData: LevelData, err?: Error) => {
       next((vm: any) => vm.setLevelData(levelData, err));
     });
   },
   methods: {
+    /**
+     * Call to change the current level to a different level by setting the 
+     * metadata object.
+     * @param levelData the contents of the level to manage.
+     * @param err If set, the current level is cleared and an error is 
+     * displayed. Used in cases where a level fails to load or does not exist.
+     */
     setLevelData(levelData: LevelData, err?: Error) {
       if (err) {
+        // TODO: Make visible in the level instead.
+        levelData = null;
         console.error(err);
       } else {
         this.levelData = levelData;
       }
     },
+    /**
+     * When the blockly level emits a code update, we process it here.
+     * When called, we update the lean server with the contents of `c` and we 
+     * refresh our tracking the goal state.
+     * @param c the code to send to the lean server to process.
+     */
     syncCodeFile(c: CodeChangedResult) {
       console.log(c.codeFile);
       if (this.levelData) {
+        // Reset watcher, we must prepare for new incoming changes.
         this.goalWatcher.startListen(c.workspace_seq);
-        this.server.sync(this.fileName, c.codeFile);
+        // Post the change to the lean server.
+        const fileName = this.fileName;
+        this.server.sync(fileName, c.codeFile);
+        // Re-query the server for any goal changes after the sync.
         this.server.info(this.fileName, c.line, c.column)
           .then((value: InfoResponse) => {
-            this.goalWatcher.testInfoResponse(value);
-          })
-          .catch((err: Error) => console.error(err));
+            const widget = value.record?.widget;
+            if (widget && widget.id) {
+                // Our INFO attempt came back with a widget id, so 
+                // there is additional widget data retrieval before passing 
+                // all data back to the goalWatcher.
+                const request: GetWidgetRequest = { 
+                  command: 'get_widget',
+                  file_name: fileName,
+                  line: widget.line,
+                  column: widget.column,
+                  id: widget.id
+                };
+                this.server.send(request).then(e => {
+                  this.goalWatcher.testInfoResponse(value, e.widget.html);
+                }).catch(e => console.log(e));
+              } else {
+                // Our INFO attempt came back without a widget id. So we process
+                // the goals without associated widget data.
+                this.goalWatcher.testInfoResponse(value);
+              }
+            }
+          ).catch((err: Error) => console.error(err));
       }
     },
     updateGoal(g: GoalChanged) {

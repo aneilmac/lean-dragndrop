@@ -8,12 +8,9 @@
     "decl" : "(x : mynat) : x = x"
   },
   "toolbox":  {
-    "kind": "flyoutToolbox",
-    "contents": [
-      {
-        "kind": "block",
-        "type": "tactic_refl"
-      }
-    ]
+    "tactics": [
+      "<block type='tactic_refl' />"
+    ],
+    "propositions": [ ]
   }
 }

@@ -1,9 +1,15 @@
 <template>
   <div class="container">
-      <pre id="goalArea">{{currentGoal.goal}}</pre>
+      <pre id="goalArea">
+Completed: {{currentGoal.completed}}
+
+{{currentGoal.goals.join('\n')}}
+
+{{currentGoal.hypotheses.map(x => `${x.expression} : ${x.expressionType}`).join('\n')}}
+      </pre>
       <LeanWorkspace 
         id="workspace" 
-        v-bind:toolbox="levelData ? levelData.toolbox : null" 
+        v-bind:toolbox="completeToolbox" 
         v-bind:lemma-name="levelData ? levelData.lemma.name : ''" 
         v-bind:lemma-decl="levelData ? levelData.lemma.decl : ''" 
         v-bind:active-errors="formattedErrors" 
@@ -16,7 +22,7 @@
 import Vue from 'vue';
 import { PropType } from 'vue/types/options';
 import LeanWorkspace from '@/components/LeanWorkspace.vue';
-import {LevelData} from '@/levelData';
+import {LevelData, LevelToolbox} from '@/levelData';
 import {calculateRowColumn, CodeChangedResult} from '@/codeUtils'
 import {GoalChanged} from '@/goalWatcher';
 
@@ -58,6 +64,22 @@ export default Vue.extend({
     }
   },
   computed: {
+    completeToolbox: function(): LevelToolbox {
+      let props: string[] = [];
+      
+      if (this.levelData) {
+        props = props.concat(this.levelData.toolbox.propositions);
+      }
+
+      for (const h of this.currentGoal.hypotheses) {
+        props.push(`<block type='prop' editable='false'><field name='PROP_NAME' id="${h.expression}">${h.expression}</field></block>`)
+      }
+
+      return {
+        tactics: this.levelData ? this.levelData.toolbox.tactics : [],
+        propositions: props
+      }
+    },
     codeFile: function() : CodeChangedResult {
       if (this.levelData) {
         let c = '';
