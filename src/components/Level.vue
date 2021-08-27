@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-      <pre id="goalArea">
+      <div id="goalArea">
 Completed: {{currentGoal.completed}}
 
 {{currentGoal.goals.join('\n')}}
 
 {{currentGoal.hypotheses.map(x => `${x.expression} : ${x.expressionType}`).join('\n')}}
-      </pre>
+      </div>
       <LeanWorkspace 
         id="workspace" 
         v-bind:toolbox="completeToolbox" 
@@ -64,6 +64,15 @@ export default Vue.extend({
     }
   },
   computed: {
+    goalHtml: function() : string {
+      if (this.currentGoal.goals.length > 0) {
+        const goals = '';
+        for (const i = 1; i < this.currentGoal.goals.length; i++) {
+        }
+        return goals;
+      }
+      return `<span id=currentGoal>Current goal</span><span>No goals</span>`;
+    }
     completeToolbox: function(): LevelToolbox {
       let props: string[] = [];
       
@@ -72,7 +81,7 @@ export default Vue.extend({
       }
 
       for (const h of this.currentGoal.hypotheses) {
-        props.push(`<block type='prop' editable='false'><field name='PROP_NAME' id="${h.expression}">${h.expression}</field></block>`)
+        props.push(`<block type='prop_dynamic' editable='false'><field name='PROP_NAME' id="${h.expression}">${h.expression}</field></block>`)
       }
 
       return {
@@ -131,9 +140,7 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=STIX+Two+Math&display=swap');
-
+<style>
 .container {
   display: grid; 
   grid-auto-flow: row dense; 
@@ -152,8 +159,6 @@ export default Vue.extend({
 }
 #goalArea { 
   grid-area: goal-area; 
-  font-family: 'STIX Two Math', serif;
-  font-size: 20px;
   display: flex;
   justify-content: center;
 }

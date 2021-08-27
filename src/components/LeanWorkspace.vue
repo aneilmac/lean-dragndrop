@@ -8,9 +8,8 @@ import * as Blockly from 'blockly';
 import {Generator, defineBlocks} from '@aneilmac/blockly-plugin-lean';
 import { PropType } from 'vue/types/options';
 import {WorkspaceError} from '@/goalWatcher';
-// @ts-ignore
-//import {ContinuousToolbox, ContinuousFlyout, ContinuousMetrics} from '@blockly/continuous-toolbox';
 import {LevelToolbox} from '@/levelData';
+import {Seshat} from '@/theme/seshat';
 
 defineBlocks(Blockly);
 
@@ -26,10 +25,12 @@ export default Vue.extend({
     return {
       options: {
         media: 'media/',
+        renderer: "thrasos",
         toolbox: {
           kind: "",
           contents: []
         },
+        theme: Seshat,
         grid: {
             spacing: 25,
             length: 3,
@@ -154,7 +155,7 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped>
+<style>
 .blocklyDiv {
   height: 100%;
   width: 100%;
