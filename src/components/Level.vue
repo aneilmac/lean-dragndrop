@@ -1,20 +1,20 @@
 <template>
-  <div class="container">
-      <div id="goalArea">
-Completed: {{currentGoal.completed}}
-
-{{currentGoal.goals.join('\n')}}
-
-{{currentGoal.hypotheses.map(x => `${x.expression} : ${x.expressionType}`).join('\n')}}
+  <div class="container" :style="sehatStyleConfig">
+    <div class="level-title">{{levelData ? levelData.title : ''}}</div>
+    <div class="level">
+      <div class="goal-area">
+        <div v-html="goalHtml" class="goals"/>
+        <div v-html="propsHtml" class="props"/>
       </div>
       <LeanWorkspace 
-        id="workspace" 
+        class="workspace" 
         v-bind:toolbox="completeToolbox" 
         v-bind:lemma-name="levelData ? levelData.lemma.name : ''" 
         v-bind:lemma-decl="levelData ? levelData.lemma.decl : ''" 
         v-bind:active-errors="formattedErrors" 
         ref="workspace" 
         v-on:codeChanged="updateCode" />
+    </div>
   </div>
 </template>
 
@@ -25,6 +25,7 @@ import LeanWorkspace from '@/components/LeanWorkspace.vue';
 import {LevelData, LevelToolbox} from '@/levelData';
 import {calculateRowColumn, CodeChangedResult} from '@/codeUtils'
 import {GoalChanged} from '@/goalWatcher';
+import {Seshat} from '@/theme/seshat';
 
 export default Vue.extend({
   name: 'Level',
@@ -64,15 +65,52 @@ export default Vue.extend({
     }
   },
   computed: {
+    sehatStyleConfig: function() {
+      return {
+        backgroundColor: Seshat.componentStyles.workspaceBackgroundColour,
+        color: Seshat.componentStyles.flyoutForegroundColour,
+        fontFamily: Seshat.fontStyle.family,
+        fontWeight: Seshat.fontStyle.weight,
+        fontSize: `${Seshat.fontStyle.size}pt`
+      };
+    },
     goalHtml: function() : string {
-      if (this.currentGoal.goals.length > 0) {
-        const goals = '';
-        for (const i = 1; i < this.currentGoal.goals.length; i++) {
-        }
-        return goals;
+      const goals = this.currentGoal.goals;
+
+      const currentGoal = goals.length > 0 ? goals[0] : "No current goal";
+      const remainingGoals = goals.slice(1).map((g) => `<li>${g}</li>`);
+      if (remainingGoals.length === 0) {
+        remainingGoals.push(`<li>No remaining goals</li>`);
       }
-      return `<span id=currentGoal>Current goal</span><span>No goals</span>`;
-    }
+
+      return `
+        <div class="goal-title">
+          <span class="goalTitle">Current goal</span>
+          <span>${currentGoal}</span>
+        </div>
+        <div class="goal-remainder">
+          <span class="goalTitle">Remaining goals</span>
+          <ol id="remainingGoalsList">
+            ${remainingGoals.join('')}
+          </ol>
+        </div>`;
+    },
+    propsHtml: function() : string {
+      const props = this.currentGoal.hypotheses;
+
+      const propsList = props.map((p) => `<li>${p.expression} : ${p.expressionType}</li>`);
+      if (propsList.length === 0) {
+        propsList.push(`<li>None</li>`);
+      }
+
+      return `
+        <div class="props-title"><span class="goalTitle">Active propositions</span></div>
+        <div class="props-list">
+          <ul>
+            ${propsList.join('')}
+          </ul>
+        </div>`;
+    },
     completeToolbox: function(): LevelToolbox {
       let props: string[] = [];
       
@@ -140,26 +178,72 @@ export default Vue.extend({
 })
 </script>
 
-<style>
+<style >
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 .container {
   display: grid; 
-  grid-auto-flow: row dense; 
-  grid-auto-rows: 1fr; 
-  grid-template-columns: 1fr 1fr; 
+  grid-template-columns: 1fr; 
+  grid-template-rows: 0.1fr 1.9fr; 
+  gap: 0px 0px; 
+  width: 100%; 
+  height: 100%; 
+}
+.level-title {
+  grid-area: 1 / 1 / 3 / 2; 
+  text-align: right;
+  font-size: 22px;
+  margin-right: 2em;
+}
+.level {
+  display: grid; 
+  grid-template-columns: 0.7fr 1.3fr; 
   grid-template-rows: 1fr; 
   gap: 0px 0px; 
   grid-template-areas: 
-    "goal-area ."; 
-  width: 100%;
-  height: 100%;
+    "goal-area workspace"; 
+  grid-area: 2 / 1 / 3 / 2; 
 }
-#workspace {
-  justify-self: stretch; 
-  grid-area: 1; 
-}
-#goalArea { 
+.workspace { grid-area: workspace; }
+.goal-area {
+  display: grid; 
+  grid-template-columns: 1fr; 
+  grid-template-rows: 1fr 1fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "goals"
+    "props"; 
   grid-area: goal-area; 
-  display: flex;
-  justify-content: center;
+  text-align: center;
+}
+.goals {
+  display: grid; 
+  grid-template-columns: 1fr; 
+  grid-template-rows: 0.2fr 1.8fr; 
+  grid-template-areas: 
+    "goal-title"
+    "goal-remainder"; 
+  grid-area: goals; 
+  gap: 1em 1em; 
+}
+.goal-title { 
+  grid-area: goal-title;
+  font-weight: bold; 
+}
+.goal-remainder { grid-area: goal-remainder; }
+.props {
+  display: grid; 
+  grid-template-columns: 1fr; 
+  grid-template-rows: 0.2fr 1.8fr; 
+  grid-template-areas: 
+    "prop-title"
+    "prop-list"; 
+  grid-area: props; 
+  gap: 1em 1em; 
+}
+.prop-title { grid-area: prop-title; }
+.prop-list { grid-area: prop-list; }
+.goalTitle {
+  font-size: 20px;
+  display: block;
 }
 </style>

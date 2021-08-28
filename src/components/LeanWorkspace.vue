@@ -31,12 +31,6 @@ export default Vue.extend({
           contents: []
         },
         theme: Seshat,
-        grid: {
-            spacing: 25,
-            length: 3,
-            colour: '#ccc',
-            snap: true
-        },
       } as Blockly.BlocklyOptions,
       workspace: null as Blockly.WorkspaceSvg | null,
     }
@@ -154,11 +148,3 @@ export default Vue.extend({
   }
 })
 </script>
-
-<style>
-.blocklyDiv {
-  height: 100%;
-  width: 100%;
-  text-align: left;
-}
-</style>

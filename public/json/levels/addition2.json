@@ -1,13 +1,13 @@
 {
-  "level_id": "addition_1",
-  "title": "Prove: 0 + n = n",
+  "level_id": "addition_2",
+  "title": "Prove: (a + b) + c = a + (b + c)",
   "preamble": [
     "import mynat.add"
   ],
   "in_namespace": "mynat",
   "lemma": {
-    "name": "zero_add ",
-    "decl" : "(n : mynat) : 0 + n  = n"
+    "name": "add_assoc",
+    "decl" : "(a b c : mynat) : (a + b) + c = a + (b + c)"
   },
   "toolbox":  {
     "tactics": [

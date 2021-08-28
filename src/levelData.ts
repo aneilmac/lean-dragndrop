@@ -7,6 +7,7 @@ export interface LevelToolbox {
 
 export interface _LevelData {
     level_id: string,
+    title: string,
     preamble: [string] | undefined,
     in_namespace: string | undefined
     lemma: {
