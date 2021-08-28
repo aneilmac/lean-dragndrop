@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import {PropType} from 'vue/types/options';
-import {Hypothesis} from '@/goalWatcher';
+import {Hypothesis} from '@/levelData';
 
 export default Vue.extend({
   name: 'GoalArea',

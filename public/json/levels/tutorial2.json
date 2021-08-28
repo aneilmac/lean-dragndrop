@@ -1,5 +1,6 @@
 {
   "level_id": "tutorial_2",
+  "title": "Introduction to rewrite",
   "preamble": [
     "import mynat.definition",
     "import mynat.add",
@@ -7,7 +8,12 @@
   ],
   "lemma": {
     "name": "example2",
-    "decl" : "(x y : mynat) (h : y = x + 7) : 2 * y = 2 * (x + 7)"
+    "variables": [
+      {"expression": "x", "expressionType": "mynat"},
+      {"expression": "y", "expressionType": "mynat"},
+      {"expression": "h", "expressionType": "y = x + 7"}
+    ],
+    "decl" : "2 * y = 2 * (x + 7)"
   },
   "toolbox":  {
     "tactics": [

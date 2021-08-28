@@ -1,5 +1,6 @@
 {
   "level_id": "tutorial_1",
+  "title": "Prove: x * y + z = x * y + z",
   "preamble": [
     "import mynat.definition",
     "import mynat.add",
@@ -7,7 +8,12 @@
   ],
   "lemma": {
     "name": "example1",
-    "decl" : "(x y z : mynat) : x * y + z = x * y + z"
+    "variables": [
+      {"expression": "x", "expressionType": "mynat"},
+      {"expression": "y", "expressionType": "mynat"},
+      {"expression": "z", "expressionType": "mynat"}
+    ],
+    "decl" : "x * y + z = x * y + z"
   },
   "toolbox":  {
     "tactics": [

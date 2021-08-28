@@ -1,6 +1,6 @@
 <template>
   <div class="container" :style="sehatStyleConfig">
-    <div class="level-title">{{levelData ? levelData.title : ''}}</div>
+    <div class="level-title">{{levelData.title}}</div>
     <div class="level">
       <GoalArea 
         class="goal-area" 
@@ -10,8 +10,7 @@
       <LeanWorkspace 
         class="workspace" 
         v-bind:toolbox="completeToolbox" 
-        v-bind:lemma-name="levelData ? levelData.lemma.name : ''" 
-        v-bind:lemma-decl="levelData ? levelData.lemma.decl : ''" 
+        v-bind:lemma="levelData.lemma" 
         v-bind:active-errors="formattedErrors"
         v-on:codeChanged="updateCode" />
     </div>
@@ -88,7 +87,7 @@ export default Vue.extend({
       }
 
       return {
-        tactics: this.levelData ? this.levelData.toolbox.tactics : [],
+        tactics: this.levelData.toolbox.tactics,
         propositions: props
       }
     },
@@ -107,7 +106,7 @@ export default Vue.extend({
         }
 
         c += `${this.code}`;
-        const index = c.length - "\nend".length - 1;
+        const index = c.search(/^end$/gm) - 2;
 
         if (this.levelData.in_namespace) {
           c += `\nend ${this.levelData.in_namespace}`

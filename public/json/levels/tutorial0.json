@@ -1,11 +1,15 @@
 {
   "level_id": "tutorial_01",
+  "title": "Hello world",
   "preamble": [
       "import mynat.definition"
   ],
   "lemma": {
     "name": "example0",
-    "decl" : "(x : mynat) : x = x"
+    "variables": [
+      {"expression": "x", "expressionType": "mynat"}
+    ],
+    "decl" : "x = x"
   },
   "toolbox":  {
     "tactics": [

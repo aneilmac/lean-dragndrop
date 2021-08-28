@@ -1,12 +1,18 @@
 {
   "level_id": "tutorial_3",
+  "title": "Rewrite part 2",
   "preamble": [
     "import mynat.definition",
     "def succ := mynat.succ"
   ],
   "lemma": {
     "name": "example3",
-    "decl" : "(a b : mynat) (h : succ a = b) : succ(succ(a)) = succ(b)"
+    "variables": [
+      {"expression": "a", "expressionType": "mynat"},
+      {"expression": "b", "expressionType": "mynat"},
+      {"expression": "h", "expressionType": "succ a = b"}
+    ],
+    "decl" : "succ (succ a) = succ b"
   },
   "toolbox":  {
     "tactics": [

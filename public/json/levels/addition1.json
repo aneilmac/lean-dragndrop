@@ -7,7 +7,10 @@
   "in_namespace": "mynat",
   "lemma": {
     "name": "zero_add ",
-    "decl" : "(n : mynat) : 0 + n  = n"
+    "variables": [
+      {"expression": "n", "expressionType": "mynat"}
+    ],
+    "decl" : "0 + n  = n"
   },
   "toolbox":  {
     "tactics": [
@@ -17,8 +20,8 @@
       "<block type='tactic_sorry' />"
     ],
     "propositions": [
-      "<block type='prop' editable='false'><data>add_zero</data><field name='PROP_NAME'>a + 0 = a</field></block>",
-      "<block type='prop' editable='false'><data>add_succ</data><field name='PROP_NAME'>a + succ b = succ (a + b)</field></block>"
+      "<block type='prop' editable='false'><data>add_zero</data><field name='PROP_NAME'>x + 0 = x</field></block>",
+      "<block type='prop' editable='false'><data>add_succ</data><field name='PROP_NAME'>x + succ y = succ (x + y)</field></block>"
     ]
   }
 }

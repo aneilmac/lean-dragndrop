@@ -1,9 +1,5 @@
 import { AllMessagesResponse, Message, InfoResponse, WidgetHtml, WidgetElement, WidgetComponent } from 'lean-client-js-core';
-
-export interface Hypothesis {
-  expression: string
-  expressionType: string,
-}
+import { Hypothesis } from './levelData';
 
 export interface WorkspaceError {
   line: number,

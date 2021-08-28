@@ -8,17 +8,19 @@ import * as Blockly from 'blockly';
 import {Generator, defineBlocks} from '@aneilmac/blockly-plugin-lean';
 import { PropType } from 'vue/types/options';
 import {WorkspaceError} from '@/goalWatcher';
-import {LevelToolbox} from '@/levelData';
+import {Hypothesis, Lemma, LevelToolbox} from '@/levelData';
 import {Seshat} from '@/theme/seshat';
 
 defineBlocks(Blockly);
+
+const VARIABLES_ID = "=.;oGfZ!+bEEDS|x5O}7";
+const LEMMA_ID = "gZF[37BYC:SUBO(#@0([";
 
 export default Vue.extend({
   name: 'LeakWorkspace',
   props: {
     toolbox: Object as PropType<LevelToolbox>,
-    lemmaName: String,
-    lemmaDecl: String,
+    lemma: Object as PropType<Lemma>,
     activeErrors: Array as PropType<WorkspaceError[]>
   },
   data(){
@@ -37,17 +39,21 @@ export default Vue.extend({
   },
   computed: {
     initialWorkspaceDOM: function() {
-      if (this.lemmaName && this.lemmaDecl) {
-        return `
-        <xml>
-          <block type="lemma" deletable="false" movable="true" editable="false">
-            <field name="THEOREM_NAME">${this.lemmaName}</field>
-            <field name="THEOREM_DECLARATION">${this.lemmaDecl}</field>
-            <data>nat_num_game</data>
-          </block>
-        </xml>`;
-      }
-      return `<xml></xml>`;
+      return `
+      <xml>
+        <block type="variables" deletable="false" editable="false" id="${VARIABLES_ID}">
+          <statement name="VARIABLES">
+            ${generateVariableBlocks_(this.lemma.variables)}
+          </statement>
+          <next>
+            <block type="lemma" editable="false" movable="false" id="${LEMMA_ID}">
+              <field name="THEOREM_NAME">${this.lemma.name}</field>
+              <field name="THEOREM_DECLARATION">${this.lemma.decl}</field>
+              <data>nat_num_game</data>
+            </block>
+          </next>
+        </block>
+      </xml>`;
     }
   },
   mounted() {
@@ -96,29 +102,24 @@ export default Vue.extend({
       let blocks = `<xml>${newTools.tactics.join('') + newTools.propositions.join('')}</xml>`;
       this.workspace?.updateToolbox(blocks);
     },
-    lemmaName:  function() { this.updateWorkspace(); },
-    lemmaDecl: function() { this.updateWorkspace(); },
+    lemma: function() { this.updateWorkspace(); },
     activeErrors: function(newVal: WorkspaceError[]) {
       if (this.workspace) {
-        const lemmaBlock = this.workspace.getTopBlocks(true)[0];
-        const children = lemmaBlock.getChildren(true);
-        
-        // Clear out old warnings.
-        lemmaBlock.setWarningText(null as any);
-        let child = children.length > 0 ? children[0] : null;
-        while (child != null)
-        {
-          child.setWarningText(null as any);
-          child = child.getNextBlock();
-        }
+        const lemmaBlock = this.workspace.getBlockById(LEMMA_ID);
 
         // Collect all statement blocks.
         let statements = [];
-        child = children.length > 0 ? children[0] : null;
-        while (child != null)
+        let currentStatement = lemmaBlock.getInputTargetBlock('LEMMA_PROOF');
+        while (currentStatement != null)
         {
-          statements.push(child);
-          child = child.getNextBlock();
+          statements.push(currentStatement);
+          currentStatement = currentStatement.getNextBlock();
+        }
+
+        // Clear out old warnings.
+        lemmaBlock.setWarningText(null as any);
+        for (const s of statements) {
+          s.setWarningText(null as any);
         }
 
         // Apply new warning messages to each statement block we find.
@@ -147,4 +148,19 @@ export default Vue.extend({
     }
   }
 })
+
+function generateVariableBlocks_(vs: Hypothesis[]) : string {
+  return vs.reduceRight(
+        (p: string, c: Hypothesis) => {
+          return `
+          <block type="prop_declaration" editable="false" movable="false">
+            <field name="VARIABLE_DECL">${c.expression}</field>
+            <field name="VARIABLE_DEF">${c.expressionType}</field>
+            <next>${p}</next>
+          </block>`;
+        },
+        ''
+      );
+}
+
 </script>

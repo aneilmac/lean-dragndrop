@@ -1,12 +1,16 @@
 {
   "level_id": "tutorial_4",
+  "title": "Prove: a + succ(0) = succ(a)",
   "preamble": [
     "import mynat.add"
   ],
   "in_namespace": "mynat",
   "lemma": {
     "name": "add_succ_zero ",
-    "decl" : "(a : mynat) : a + succ(0)  = succ(a)"
+    "variables": [
+      {"expression": "a", "expressionType": "mynat"}
+    ],
+    "decl" : "a + succ(0) = succ(a)"
   },
   "toolbox":  {
     "tactics": [
@@ -15,8 +19,8 @@
       "<block type='tactic_sorry' />"
     ],
     "propositions": [ 
-      "<block type='prop' editable='false'><data>add_zero</data><field name='PROP_NAME'>a + 0 = a</field></block>",
-      "<block type='prop' editable='false'><data>add_succ</data><field name='PROP_NAME'>a + succ b = succ (a + b)</field></block>"
+      "<block type='prop' editable='false'><data>add_zero</data><field name='PROP_NAME'>x + 0 = x</field></block>",
+      "<block type='prop' editable='false'><data>add_succ</data><field name='PROP_NAME'>x + succ y = succ (x + y)</field></block>"
     ]
   }
 }

@@ -12,7 +12,7 @@ import makeServer from '@/makeServer';
 import { GetWidgetRequest, AllMessagesResponse, InfoResponse } from 'lean-client-js-core';
 import {CodeChangedResult} from '@/codeUtils'
 import {GoalChanged, GoalWatcher} from '@/goalWatcher'
-import {readLevel, LevelData} from '@/levelData';
+import {EMPTY_LEVEL, readLevel, LevelData} from '@/levelData';
 import {Route} from 'vue-router';
 
 const singleton_server = makeServer();
@@ -34,7 +34,7 @@ export default Vue.extend({
      * `<currentLevelName>.lean` or an empty string if levelData is null.
      */
     fileName: function() : string {
-      return this.levelData ? `${this.levelData.level_id}.lean` : '';
+      return this.levelData.level_id ? `${this.levelData.level_id}.lean` : '';
     }
   },
   data() {
@@ -44,7 +44,7 @@ export default Vue.extend({
       // Our listener service for processing lean server communication.
       goalWatcher: new GoalWatcher(),
       // Metadata of the level
-      levelData: null as LevelData,
+      levelData: EMPTY_LEVEL,
       // The current state of the level. Including the current goal to be 
       // solved, the nature of whether the user has completed the level, and 
       // all errors/warnings.
@@ -65,7 +65,7 @@ export default Vue.extend({
     // to do with lean file contents. We parse these messages to test level 
     // state.
     this.server.allMessages.on((allMessages: AllMessagesResponse) => {
-      if (this.levelData) {
+      if (this.levelData.level_id) {
         this.goalWatcher.testAllMessages(allMessages);
       }
     });
@@ -88,7 +88,7 @@ export default Vue.extend({
     setLevelData(levelData: LevelData, err?: Error) {
       if (err) {
         // TODO: Make visible in the level instead.
-        levelData = null;
+        this.levelData = levelData;
         console.error(err);
       } else {
         this.levelData = levelData;
@@ -102,7 +102,7 @@ export default Vue.extend({
      */
     syncCodeFile(c: CodeChangedResult) {
       console.log(c.codeFile);
-      if (this.levelData) {
+      if (this.levelData.level_id) {
         // Reset watcher, we must prepare for new incoming changes.
         this.goalWatcher.startListen(c.workspace_seq);
         // Post the change to the lean server.
