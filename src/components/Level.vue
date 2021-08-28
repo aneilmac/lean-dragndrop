@@ -2,17 +2,17 @@
   <div class="container" :style="sehatStyleConfig">
     <div class="level-title">{{levelData ? levelData.title : ''}}</div>
     <div class="level">
-      <div class="goal-area">
-        <div v-html="goalHtml" class="goals"/>
-        <div v-html="propsHtml" class="props"/>
-      </div>
+      <GoalArea 
+        class="goal-area" 
+        v-bind:goals="currentGoal.goals"
+        v-bind:propositions="currentGoal.hypotheses"
+      />
       <LeanWorkspace 
         class="workspace" 
         v-bind:toolbox="completeToolbox" 
         v-bind:lemma-name="levelData ? levelData.lemma.name : ''" 
         v-bind:lemma-decl="levelData ? levelData.lemma.decl : ''" 
-        v-bind:active-errors="formattedErrors" 
-        ref="workspace" 
+        v-bind:active-errors="formattedErrors"
         v-on:codeChanged="updateCode" />
     </div>
   </div>
@@ -22,6 +22,7 @@
 import Vue from 'vue';
 import { PropType } from 'vue/types/options';
 import LeanWorkspace from '@/components/LeanWorkspace.vue';
+import GoalArea from '@/components/GoalArea.vue';
 import {LevelData, LevelToolbox} from '@/levelData';
 import {calculateRowColumn, CodeChangedResult} from '@/codeUtils'
 import {GoalChanged} from '@/goalWatcher';
@@ -30,7 +31,8 @@ import {Seshat} from '@/theme/seshat';
 export default Vue.extend({
   name: 'Level',
   components: {
-    LeanWorkspace
+    LeanWorkspace,
+    GoalArea
   },
   props: {
     levelData: Object as PropType<LevelData>,
@@ -73,43 +75,6 @@ export default Vue.extend({
         fontWeight: Seshat.fontStyle.weight,
         fontSize: `${Seshat.fontStyle.size}pt`
       };
-    },
-    goalHtml: function() : string {
-      const goals = this.currentGoal.goals;
-
-      const currentGoal = goals.length > 0 ? goals[0] : "No current goal";
-      const remainingGoals = goals.slice(1).map((g) => `<li>${g}</li>`);
-      if (remainingGoals.length === 0) {
-        remainingGoals.push(`<li>No remaining goals</li>`);
-      }
-
-      return `
-        <div class="goal-title">
-          <span class="goalTitle">Current goal</span>
-          <span>${currentGoal}</span>
-        </div>
-        <div class="goal-remainder">
-          <span class="goalTitle">Remaining goals</span>
-          <ol id="remainingGoalsList">
-            ${remainingGoals.join('')}
-          </ol>
-        </div>`;
-    },
-    propsHtml: function() : string {
-      const props = this.currentGoal.hypotheses;
-
-      const propsList = props.map((p) => `<li>${p.expression} : ${p.expressionType}</li>`);
-      if (propsList.length === 0) {
-        propsList.push(`<li>None</li>`);
-      }
-
-      return `
-        <div class="props-title"><span class="goalTitle">Active propositions</span></div>
-        <div class="props-list">
-          <ul>
-            ${propsList.join('')}
-          </ul>
-        </div>`;
     },
     completeToolbox: function(): LevelToolbox {
       let props: string[] = [];
@@ -204,46 +169,5 @@ export default Vue.extend({
   grid-area: 2 / 1 / 3 / 2; 
 }
 .workspace { grid-area: workspace; }
-.goal-area {
-  display: grid; 
-  grid-template-columns: 1fr; 
-  grid-template-rows: 1fr 1fr; 
-  gap: 0px 0px; 
-  grid-template-areas: 
-    "goals"
-    "props"; 
-  grid-area: goal-area; 
-  text-align: center;
-}
-.goals {
-  display: grid; 
-  grid-template-columns: 1fr; 
-  grid-template-rows: 0.2fr 1.8fr; 
-  grid-template-areas: 
-    "goal-title"
-    "goal-remainder"; 
-  grid-area: goals; 
-  gap: 1em 1em; 
-}
-.goal-title { 
-  grid-area: goal-title;
-  font-weight: bold; 
-}
-.goal-remainder { grid-area: goal-remainder; }
-.props {
-  display: grid; 
-  grid-template-columns: 1fr; 
-  grid-template-rows: 0.2fr 1.8fr; 
-  grid-template-areas: 
-    "prop-title"
-    "prop-list"; 
-  grid-area: props; 
-  gap: 1em 1em; 
-}
-.prop-title { grid-area: prop-title; }
-.prop-list { grid-area: prop-list; }
-.goalTitle {
-  font-size: 20px;
-  display: block;
-}
+.goal-area { grid-area: goal-area; }
 </style>
