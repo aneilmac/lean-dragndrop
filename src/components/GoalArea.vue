@@ -30,19 +30,18 @@
 <script lang="ts">
 import Vue from 'vue';
 import {PropType} from 'vue/types/options';
-import {Hypothesis} from '@/levelData';
+import {Goal, Hypothesis} from '@/levelData';
 
 export default Vue.extend({
   name: 'GoalArea',
   props: {
-    goals: Array as PropType<string[]>,
-    propositions: Array as PropType<Hypothesis[]>
+    goals: Array as PropType<Goal[]>
   },
   methods: {
   },
   computed: {
     currentGoal: function() : string {
-      return this.goals.length > 0 ? this.goals[0] : "None"
+      return this.goals.length > 0 ? this.goals[0].goal : "None"
     },
     remainingGoalsTitle: function() : string {
       return  this.goals.length === 0 ? "" :
@@ -50,8 +49,14 @@ export default Vue.extend({
               "Remaining goals"
     },
     remainingGoals: function() : string[] {
-      return this.goals.slice(1);
+      return this.goals.slice(1).map((g) => g.goal);
     },
+    propositions: function() : Hypothesis[] {
+      if (this.goals.length > 0) {
+        return this.goals[0].hypotheses;
+      }
+      return [];
+    }
   }
 })
 </script>

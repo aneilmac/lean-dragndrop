@@ -4,8 +4,7 @@
     <div class="level">
       <GoalArea 
         class="goal-area" 
-        v-bind:goals="currentGoal.goals"
-        v-bind:propositions="currentGoal.hypotheses"
+        v-bind:goals="objectives.goals"
       />
       <LeanWorkspace 
         class="workspace" 
@@ -35,7 +34,7 @@ export default Vue.extend({
   },
   props: {
     levelData: Object as PropType<LevelData>,
-    currentGoal: Object as PropType<GoalChanged>
+    objectives: Object as PropType<GoalChanged>
   },
   data() {
     return {
@@ -82,8 +81,11 @@ export default Vue.extend({
         props = props.concat(this.levelData.toolbox.propositions);
       }
 
-      for (const h of this.currentGoal.hypotheses) {
-        props.push(`<block type='prop_dynamic' editable='false'><field name='PROP_NAME' id="${h.expression}">${h.expression}</field></block>`)
+      if (this.objectives.goals.length > 0) {
+        const currentHypotheses = this.objectives.goals[0].hypotheses;
+        for (const h of currentHypotheses) {
+          props.push(`<block type='prop_dynamic' editable='false'><field name='PROP_NAME' id="${h.expression}">${h.expression}</field></block>`)
+        }
       }
 
       return {
@@ -132,7 +134,7 @@ export default Vue.extend({
     formattedErrors: function () {
       let beginIndex = this.codeFile.codeFile.search(/^begin$/gm);
       let [line] = calculateRowColumn(this.codeFile.codeFile, beginIndex);
-      return this.currentGoal.errors.map(e => {
+      return this.objectives.errors.map(e => {
         let f = Object.assign({}, e);
         f.line -= line + 1;
         return f;

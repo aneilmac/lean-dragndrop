@@ -1,7 +1,7 @@
 <template>
   <Level 
   v-bind:level-data="levelData" 
-  v-bind:current-goal="currentGoal"
+  v-bind:objectives="objectives"
   v-on:codeFileChanged="syncCodeFile"/>
 </template>
 
@@ -48,7 +48,7 @@ export default Vue.extend({
       // The current state of the level. Including the current goal to be 
       // solved, the nature of whether the user has completed the level, and 
       // all errors/warnings.
-      currentGoal: {
+      objectives: {
         errors: [],
         goals: [],
         completed: false,
@@ -136,7 +136,7 @@ export default Vue.extend({
       }
     },
     updateGoal(g: GoalChanged) {
-      this.currentGoal = g;
+      this.objectives = g;
     }
   }
 })

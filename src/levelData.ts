@@ -3,6 +3,11 @@ export interface LevelToolbox {
   propositions: string[];
 }
 
+export interface Goal {
+  goal: string;
+  hypotheses: Hypothesis[];
+}
+
 export interface Hypothesis {
   expression: string;
   expressionType: string;

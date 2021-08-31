@@ -13,7 +13,6 @@ import {Seshat} from '@/theme/seshat';
 
 defineBlocks(Blockly);
 
-const VARIABLES_ID = "=.;oGfZ!+bEEDS|x5O}7";
 const LEMMA_ID = "gZF[37BYC:SUBO(#@0([";
 
 export default Vue.extend({
@@ -41,17 +40,13 @@ export default Vue.extend({
     initialWorkspaceDOM: function() {
       return `
       <xml>
-        <block type="variables" deletable="false" editable="false" id="${VARIABLES_ID}">
+        <block type="lemma" editable="false" deletable="false" id="${LEMMA_ID}">
           <statement name="VARIABLES">
             ${generateVariableBlocks_(this.lemma.variables)}
           </statement>
-          <next>
-            <block type="lemma" editable="false" movable="false" id="${LEMMA_ID}">
-              <field name="THEOREM_NAME">${this.lemma.name}</field>
-              <field name="THEOREM_DECLARATION">${this.lemma.decl}</field>
-              <data>nat_num_game</data>
-            </block>
-          </next>
+          <field name="THEOREM_NAME">${this.lemma.name}</field>
+          <field name="THEOREM_DECLARATION">${this.lemma.decl}</field>
+          <data>nat_num_game</data>
         </block>
       </xml>`;
     }
@@ -153,7 +148,7 @@ function generateVariableBlocks_(vs: Hypothesis[]) : string {
   return vs.reduceRight(
         (p: string, c: Hypothesis) => {
           return `
-          <block type="prop_declaration" editable="false" movable="false">
+          <block type="prop_declaration" editable="false" deletable="false" movable="false">
             <field name="VARIABLE_DECL">${c.expression}</field>
             <field name="VARIABLE_DEF">${c.expressionType}</field>
             <next>${p}</next>
