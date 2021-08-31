@@ -24,7 +24,8 @@ import GoalArea from '@/components/GoalArea.vue';
 import {LevelData, LevelToolbox} from '@/levelData';
 import {calculateRowColumn, CodeChangedResult} from '@/codeUtils'
 import {GoalChanged} from '@/goalWatcher';
-import {Seshat} from '@/theme/seshat';
+/* @ts-ignore */
+import * as Seshat from '@aneilmac/blockly-theme-seshat';
 
 export default Vue.extend({
   name: 'Level',
@@ -145,7 +146,6 @@ export default Vue.extend({
 </script>
 
 <style >
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 .container {
   display: grid; 
   grid-template-columns: 1fr; 

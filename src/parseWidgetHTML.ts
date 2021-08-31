@@ -70,7 +70,8 @@ function* iterateHypotheses(w: WidgetElement) : Generator<Hypothesis> {
           for (const q of w.c) {
             if (isWidgetElement(q) && q.a) {
               for (const [k, v] of Object.entries(q.a)) {
-                if (k === 'className' && JSON.stringify(v).includes('goal-hyp-type')) {
+                if (k === 'className' && 
+                    JSON.stringify(v).includes('goal-hyp-type')) {
                   const content = getContent(q);
                   yield { expression: hyp, expressionType: content };
                   break hypLoop;

@@ -9,9 +9,11 @@ import {Generator, defineBlocks} from '@aneilmac/blockly-plugin-lean';
 import { PropType } from 'vue/types/options';
 import {WorkspaceError} from '@/goalWatcher';
 import {Hypothesis, Lemma, LevelToolbox} from '@/levelData';
-import {Seshat} from '@/theme/seshat';
+/* @ts-ignore */
+import {initTheme} from '@aneilmac/blockly-theme-seshat';
 
 defineBlocks(Blockly);
+const Seshat = initTheme(Blockly);
 
 const LEMMA_ID = "gZF[37BYC:SUBO(#@0([";
 
@@ -148,7 +150,10 @@ function generateVariableBlocks_(vs: Hypothesis[]) : string {
   return vs.reduceRight(
         (p: string, c: Hypothesis) => {
           return `
-          <block type="prop_declaration" editable="false" deletable="false" movable="false">
+          <block type="prop_declaration" 
+                 editable="false" 
+                 deletable="false" 
+                 movable="false">
             <field name="VARIABLE_DECL">${c.expression}</field>
             <field name="VARIABLE_DEF">${c.expressionType}</field>
             <next>${p}</next>
